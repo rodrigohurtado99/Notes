@@ -19,8 +19,15 @@ class AuthController extends Controller
         // form validation
         $request->validate( // vai validar as regras do formulário conforme o que for passado dentro das chaves
             [
-                'text_username' => 'required', // cria um array, e dentro dessa array passa as regras e os campos a seguirem a regra
-                'text_password' => 'required'
+                'text_username' => 'required|email', // cria um array, e dentro dessa array passa as regras e os campos a seguirem a regra
+                'text_password' => 'required|min:6|max:16'
+            ],
+            [
+                'text_username.required' => 'O username é obrigatório',
+                'text_username.email' => 'Username deve ser um email válido',
+                'text_password.required' => 'O password é obrigatório',
+                'text_password.min' => 'O password deve ter pelo menos :min caracteres',
+                'text_password.max' => 'O password deve ter no máximo :max caracteres',
             ]
         ); 
 
