@@ -22,12 +22,13 @@ class AuthController extends Controller
                 'text_username' => 'required|email', // cria um array, e dentro dessa array passa as regras e os campos a seguirem a regra
                 'text_password' => 'required|min:6|max:16'
             ],
+            // mensagem erro
             [
-                'text_username.required' => 'O username é obrigatório',
-                'text_username.email' => 'Username deve ser um email válido',
-                'text_password.required' => 'O password é obrigatório',
-                'text_password.min' => 'O password deve ter pelo menos :min caracteres',
-                'text_password.max' => 'O password deve ter no máximo :max caracteres',
+                'text_username.required' => 'O username é obrigatório', // required se refere a regra que utilizaremos no ponto
+                'text_username.email' => 'Username deve ser um email válido', // aplica na regra de email
+                'text_password.required' => 'O password é obrigatório', // aplica na regra de required
+                'text_password.min' => 'O password deve ter pelo menos :min caracteres', // aplica na regra do min caracteres
+                'text_password.max' => 'O password deve ter no máximo :max caracteres', // aplica na regra do maximo de caracteres
             ]
         ); 
 
