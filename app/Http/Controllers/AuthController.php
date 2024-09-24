@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
- 
+use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\TryCatch;
 
 // Controller responsável pelo controle de usuário do site
 class AuthController extends Controller
@@ -36,7 +37,17 @@ class AuthController extends Controller
         $username = $request->input('text-username'); // nome do usuário digitado
         $password = $request->input('text_password'); // senha do usuário digitado
 
-        echo 'OK!';
+        // teste database connection
+
+        try {
+            DB::connection()->getPdo();
+            echo "Connection is OK!";
+        } catch (\PDOException $e) {
+            echo "Connection failed:" . $e->getMessage(); // se ele não encontrar uma conexão retorna um erro
+        }
+
+        echo "FIM!";
+
     }   
 
     public function logout() {
