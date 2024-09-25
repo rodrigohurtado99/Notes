@@ -36,6 +36,14 @@
                                 <button type="submit" class="btn btn-secondary w-100">LOGIN</button>
                             </div>
                         </form>
+
+                        {{-- invalid login --}}
+                        @if(session('loginError')) {{--verifica se a sessão login erro está ativada--}}
+                            <div class="alert alert-danger text-center">
+                                {{ session('loginError')}} {{-- nome da variavel que tem o erro gravado --}}
+                            </div>
+                        @endif
+
                     </div>
                 </div>
 

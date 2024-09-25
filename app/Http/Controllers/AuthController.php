@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\TryCatch;
@@ -34,24 +35,47 @@ class AuthController extends Controller
         ); 
 
         // get user input
-        $username = $request->input('text-username'); // nome do usuário digitado
+        $username = $request->input('text_username'); // nome do usuário digitado
         $password = $request->input('text_password'); // senha do usuário digitado
 
-        // teste database connection
+        // check if user exists
+        $user = User::where('username', $username) // vai verificar se o valor da coluna username é igual ao $username 
+        ->where('deleted_at', NULL) // a seguinte clausula where verifica se o usuário não foi apagado
+        ->first(); // só vai voltar o primeiro resultado
 
-        try {
-            DB::connection()->getPdo();
-            echo "Connection is OK!";
-        } catch (\PDOException $e) {
-            echo "Connection failed:" . $e->getMessage(); // se ele não encontrar uma conexão retorna um erro
+        if(!$user) { // se o user for vazio retorna erro
+            return redirect()->back()->withInput()->with('loginError', 'Username or password incorrect!');
+            // redireciona para tras, salvando o que foi digitado no input, com o seguinte erro que vai ficar gravado na sessão
         }
 
-        echo "FIM!";
+        // check if password is correct
+
+        if(!password_verify($password, $user->password)){  // se a senha for falsa ele retorna os seguintes comandos abaixo
+            return redirect()->back()->withInput()->with('loginError', 'Username or password incorrect!');
+            // redireciona para tras, salvando o que foi digitado no input, com o seguinte erro que vai ficar gravado na sessão
+        }
+
+        // update last login
+        $user->last_login = date('Y-m-d H:i:s');
+        $user->save();
+
+        // login user, colocar os dados do usuário na sessão, monta um array associativo para capturar as informações que foram geradas no login
+        session([
+            'user' => [ // user da sessão 
+                'id' => $user->id, // id do user
+                'username' => $user->username // nome do usuário
+            ]
+            ]);
+
+        // redirect to home
+        return redirect()->to('/');
 
     }   
 
     public function logout() {
-        echo 'logout';
+        // logout from the application
+        session()->forget('user'); // vai limpar a sessão criada
+        return redirect()->to('/login');
     }
 
     
