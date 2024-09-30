@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Operations;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -33,8 +34,9 @@ class MainController extends Controller
     public function editNote($id) 
     {   
 
-        $id = $this->decryptId($id); // usa o metodo privado que foi passado para poder pegar o id
+        //$id = $this->decryptId($id); // usa o metodo privado que foi passado para poder pegar o id
 
+        $id = Operations::decryptId($id); 
         echo "I'm editing note with id = $id";
 
 
@@ -42,8 +44,9 @@ class MainController extends Controller
     public function deleteNote($id) 
     {   
 
-        $id = $this->decryptId($id); // usa o metodo privado que foi passado para poder pegar o id
+        //$id = $this->decryptId($id); // usa o metodo privado que foi passado para poder pegar o id
 
+        $id = Operations::decryptId($id); // importamos a função global do services, para desencriptarmos o valor passado
         echo "I'm deleting note with id = $id";
 
     }
