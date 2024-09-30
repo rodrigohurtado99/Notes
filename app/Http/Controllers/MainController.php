@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class MainController extends Controller
 {
@@ -25,4 +27,45 @@ class MainController extends Controller
     {
         echo "I'm creating a new note";
     }
+
+    // edit note function
+
+    public function editNote($id) 
+    {   
+
+        $id = $this->decryptId($id); // usa o metodo privado que foi passado para poder pegar o id
+
+        echo "I'm editing note with id = $id";
+
+
+    }
+    public function deleteNote($id) 
+    {   
+
+        $id = $this->decryptId($id); // usa o metodo privado que foi passado para poder pegar o id
+
+        echo "I'm deleting note with id = $id";
+
+    }
+
+    // metodo disponivel para qualquer área do controlador, função sera utilizada nas funções acima 
+    // para ao inves de verificarmos duas vezes as mesmas.
+
+    private function decryptId($id)
+    {
+        // no bloco try vai tentar descriptografar o id, se não for possivel redireciona para o home
+
+        try {
+
+            $id = Crypt::decrypt($id); // vai descriptografar o id passado por url
+
+        } catch (DecryptException $e) {
+            
+            return redirect()->route('home');
+
+        }
+
+        return $id;
+    }
+
 }

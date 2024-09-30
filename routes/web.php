@@ -26,6 +26,14 @@ Route::middleware([CheckIsLogged::class])->group(function(){
     Route::get('/', [MainController::class, 'index'])->name('home');
     // rota que encaminha para a nova nota a ser criada
     Route::get('/newNote', [MainController::class, 'newNote'])->name('new');
+
+    // edit note
+    Route::get('/edit/note/{id}', [MainController::class, 'editNote'])->name('edit');
+
+    // delete note
+    Route::get('/deleteNote/note/{id}', [MainController::class, 'deleteNote'])->name('delete');
+
+
     // faz o logout da aplicação
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
