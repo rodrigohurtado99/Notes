@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Note;
 use App\Models\User;
 use App\Services\Operations;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -25,8 +26,52 @@ class MainController extends Controller
     }
 
     public function newNote() 
+    {   
+
+        // show new note view
+        return view('new_note');
+        
+    }
+
+    // submit the formulary
+    public function newNoteSubmit(Request $request)
     {
-        echo "I'm creating a new note";
+        // validade request
+        $request->validate( // vai validar as regras do formulário conforme o que for passado dentro das chaves
+            [
+                'text_title' => 'required|min:3|max:200', // cria um array, e dentro dessa array passa as regras e os campos a seguirem a regra
+                'text_note' => 'required|min:3|max:3000'
+            ],
+            // mensagens erro
+            [
+
+                'text_title.required' => 'O título é obrigatório', // required se refere a regra que utilizaremos no ponto
+                'text_title.min' => 'O título deve ter pelo menos :min caracteres', // aplica na regra do min caracteres
+                'text_title.max' => 'O título deve ter no máximo :max caracteres', // aplica na regra do maximo de caracteres
+
+                'text_note.required' => 'A nota é obrigatória',
+                'text_note.min' => 'A nota deve ter pelo menos :min caracteres', // aplica na regra do min caracteres
+                'text_note.max' => 'A nota deve ter no máximo :max caracteres', // aplica na regra do maximo de caracteres
+               
+               
+                ]
+        ); 
+
+
+        
+        // get user id
+        $id = session('user.id'); // pega o id do usuário logado
+
+        // create new note
+        $note = new Note(); // cria um novo objeto a partir do modelo orm
+        $note->user_id = $id; // informa que o id será o mesmo que o usuário logado
+        $note->title = $request->text_title; // o title vai ser o mesmo que o usuário colocou
+        $note->text = $request->text_note; // e o texto incita ao mesmo que o usuário escreveu
+
+        $note->save(); // cria uma nova nota então com essas informações
+
+        // redirect to home
+        return redirect()->route('home');
     }
 
     // edit note function

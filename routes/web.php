@@ -27,8 +27,12 @@ Route::middleware([CheckIsLogged::class])->group(function(){
     // rota que encaminha para a nova nota a ser criada
     Route::get('/newNote', [MainController::class, 'newNote'])->name('new');
 
+    // Rota responsável por fazer a submissão do formulário
+    Route::post('/newNoteSubmit', [MainController::class, 'newNoteSubmit'])->name('newNoteSubmit');
+
     // edit note
-    Route::get('/edit/note/{id}', [MainController::class, 'editNote'])->name('edit');
+    Route::get('/editNote/{id}', [MainController::class, 'editNote'])->name('edit');
+    Route::post('/editNoteSubmit', [MainController::class, 'editNoteSubmit'])->name('editNoteSubmit');
 
     // delete note
     Route::get('/deleteNote/note/{id}', [MainController::class, 'deleteNote'])->name('delete');
