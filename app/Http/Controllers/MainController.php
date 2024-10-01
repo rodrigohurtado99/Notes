@@ -17,7 +17,10 @@ class MainController extends Controller
         $id = session('user.id'); // qual o id do usuário logado
         //$user = User::find($id)->toArray();// busca no no model user o id que é igual ao que foi passado(sessão) e trás as informações em um array associativo        
         
-        $notes = User::find($id)->notes()->get()->toArray();  // busca as notas do usuário pelo id de notas da um get, e trás num array
+        $notes = User::find($id)->notes() // quais notas estão atribuidas a ele
+                                    ->whereNull('deleted_at') // onde a coluna deleted_at seja com valor nulo
+                                    ->get() // faz a busca
+                                    ->toArray();  // busca as notas do usuário pelo id de notas da um get, e trás num array
 
         
 
@@ -135,32 +138,33 @@ class MainController extends Controller
 
     public function deleteNote($id) 
     {   
-
-        //$id = $this->decryptId($id); // usa o metodo privado que foi passado para poder pegar o id
-
         $id = Operations::decryptId($id); // importamos a função global do services, para desencriptarmos o valor passado
-        echo "I'm deleting note with id = $id";
 
+        // load note
+        $note = Note::find($id);
+
+        // show delete note confirmation
+        return view('delete_note', ['note'=>$note]);
     }
 
-    // metodo disponivel para qualquer área do controlador, função sera utilizada nas funções acima 
-    // para ao inves de verificarmos duas vezes as mesmas.
-
-    private function decryptId($id)
+    public function deleteNoteConfirm($id)
     {
-        // no bloco try vai tentar descriptografar o id, se não for possivel redireciona para o home
+        // check if $id is encrypted
+        $id = Operations::decryptId($id);
 
-        try {
+        // load note
+        $note = Note::find($id);
 
-            $id = Crypt::decrypt($id); // vai descriptografar o id passado por url
+        // 1. hard delete
+        //$note->delete(); //remove fisicamente a nota
 
-        } catch (DecryptException $e) {
-            
-            return redirect()->route('home');
+        // 2. soft delete
+        $note->deleted_at = date('Y:m:d H:i:s'); // remove e coloca um deleted_at no banco
+        $note->save();
 
-        }
-
-        return $id;
+        // redirect to home
+        return redirect()->route('home');
     }
+    
 
 }
