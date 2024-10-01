@@ -88,6 +88,51 @@ class MainController extends Controller
         return view('edit_note', ['note' => $note]); // retorna a view com os parametro passado na variavel $notes
 
     }
+
+    public function editNoteSubmit(Request $request)
+    {
+
+    // validate request
+    $request->validate( // vai validar as regras do formulário conforme o que for passado dentro das chaves
+        [
+            'text_title' => 'required|min:3|max:200', // cria um array, e dentro dessa array passa as regras e os campos a seguirem a regra
+            'text_note' => 'required|min:3|max:3000'
+        ],
+        // mensagens erro
+        [
+
+            'text_title.required' => 'O título é obrigatório', // required se refere a regra que utilizaremos no ponto
+            'text_title.min' => 'O título deve ter pelo menos :min caracteres', // aplica na regra do min caracteres
+            'text_title.max' => 'O título deve ter no máximo :max caracteres', // aplica na regra do maximo de caracteres
+
+            'text_note.required' => 'A nota é obrigatória',
+            'text_note.min' => 'A nota deve ter pelo menos :min caracteres', // aplica na regra do min caracteres
+            'text_note.max' => 'A nota deve ter no máximo :max caracteres', // aplica na regra do maximo de caracteres
+            
+            
+            ]
+    ); 
+
+        // check if note_id exists
+        if($request->note_id == null){
+            return redirect()->route('home');
+        }
+
+        // decrypt note_id
+        $id = Operations::decryptId($request->note_id); // vai desencriptar o id
+
+        // load the note
+        $note = Note::find($id); // procura uma nota com o mesmo id
+
+        // update note
+        $note->title = $request->text_title; // pega o titulo que foi editado ou não
+        $note->text = $request->text_note; // pega a nota que foi editado ou não 
+        $note->save(); // grava as informações no banco de dados
+
+        // redirect to home
+        return redirect()->route('home');
+    }
+
     public function deleteNote($id) 
     {   
 
