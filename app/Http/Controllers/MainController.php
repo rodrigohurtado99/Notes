@@ -79,11 +79,13 @@ class MainController extends Controller
     public function editNote($id) 
     {   
 
-        //$id = $this->decryptId($id); // usa o metodo privado que foi passado para poder pegar o id
+        $id = Operations::decryptId($id); // importamos a função global do services, para desencriptarmos o valor passado
 
-        $id = Operations::decryptId($id); 
-        echo "I'm editing note with id = $id";
+        // load note
+        $note = Note::find($id); //procura pela nota que contém este id
 
+        // show edit note view
+        return view('edit_note', ['note' => $note]); // retorna a view com os parametro passado na variavel $notes
 
     }
     public function deleteNote($id) 
