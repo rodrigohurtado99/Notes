@@ -84,6 +84,10 @@ class MainController extends Controller
 
         $id = Operations::decryptId($id); // importamos a função global do services, para desencriptarmos o valor passado
 
+        if($id === null){
+            return redirect()->route('home');
+        }
+
         // load note
         $note = Note::find($id); //procura pela nota que contém este id
 
@@ -124,6 +128,11 @@ class MainController extends Controller
         // decrypt note_id
         $id = Operations::decryptId($request->note_id); // vai desencriptar o id
 
+        if($id === null){
+            return redirect()->route('home');
+        }
+
+
         // load the note
         $note = Note::find($id); // procura uma nota com o mesmo id
 
@@ -140,6 +149,11 @@ class MainController extends Controller
     {   
         $id = Operations::decryptId($id); // importamos a função global do services, para desencriptarmos o valor passado
 
+        if($id === null){
+            return redirect()->route('home');
+        }
+
+
         // load note
         $note = Note::find($id);
 
@@ -151,6 +165,11 @@ class MainController extends Controller
     {
         // check if $id is encrypted
         $id = Operations::decryptId($id);
+
+        if($id === null){
+            return redirect()->route('home');
+        }
+
 
         // load note
         $note = Note::find($id);
